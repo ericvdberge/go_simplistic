@@ -11,7 +11,6 @@ type Todo struct {
 	Message string
 }
 
-var todosTempl = template.Must(template.ParseFiles("web/layout/default.html", "web/pages/index.html"))
 var newTodoTempl = template.Must(template.New("newTodoTempl").Parse("<li>{{.Message}}</li>"))
 
 /**
@@ -26,8 +25,8 @@ var data = map[string][]Todo{
 /**
  * GetTodosHandler is a handler that returns the todos
  */
-func GetTodosHandler(w http.ResponseWriter, _ *http.Request) {
-	todosTempl.Execute(w, data)
+func GetTodosHandler(w http.ResponseWriter, r *http.Request) {
+	RenderPage(w, "web/pages/todos.html", data)
 }
 
 /**

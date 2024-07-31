@@ -1,0 +1,9 @@
+{{ define "header"}}
+<div class="w-full py-[10px] bg-black flex align-center justify-between px-[10%]">
+    <p class="text-xl text-white">Logo</p>
+    <div>
+        <a hx-get="/" hx-target="body" class="text-white">Todos</a>
+        <a hx-get="/search" hx-target="body"  class="text-white">Search</a>
+    </div>
+</div>
+{{ end }}

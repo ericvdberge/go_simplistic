@@ -9,6 +9,9 @@ func RegisterApiRoutes(app *fiber.App) {
 	app.Get("/", GetTodosHandler)
 	app.Post("/create-todo", CreateTodoHandler)
 
-	// //search
+	// Search
 	app.Get("/search", GetSearchHandler)
+
+	//Login
+	app.Get("/login", GetLoginHandler)
 }

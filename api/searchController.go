@@ -1,9 +1,11 @@
 package api
 
-import (
-	"net/http"
-)
+import "github.com/gofiber/fiber/v2"
 
-func HandleGetSearch(w http.ResponseWriter, r *http.Request) {
-	RenderPage(w, "web/pages/search.html", nil)
+func GetSearchHandler(c *fiber.Ctx) error {
+	return c.Render(
+		"pages/search",
+		nil,
+		"layout/default",
+	)
 }

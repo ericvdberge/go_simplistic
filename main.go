@@ -3,17 +3,22 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"test/api"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/template/html/v2"
 )
 
 func main() {
 	fmt.Println("Listening on :8080")
 
-	fs := http.FileServer(http.Dir("static"))
-	http.Handle("/static/", http.StripPrefix("/static/", fs))
+	engine := html.New("./web", ".html")
+	app := fiber.New(fiber.Config{
+		Views: engine,
+	})
 
-	api.RegisterApiRoutes()
+	app.Static("/static", "./static")
+	api.RegisterApiRoutes(app)
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(app.Listen(":8080"))
 }

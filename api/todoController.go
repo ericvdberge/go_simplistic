@@ -2,8 +2,9 @@ package api
 
 import (
 	"fmt"
-	"net/http"
 	"text/template"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 type Todo struct {
@@ -11,7 +12,7 @@ type Todo struct {
 	Message string
 }
 
-var newTodoTempl = template.Must(template.New("newTodoTempl").Parse("<li>{{.Message}}</li>"))
+// var newTodoTempl = template.Must(template.New("newTodoTempl").Parse("<li>{{.Message}}</li>"))
 
 /**
  * Data to be used in the template
@@ -25,16 +26,22 @@ var data = map[string][]Todo{
 /**
  * GetTodosHandler is a handler that returns the todos
  */
-func GetTodosHandler(w http.ResponseWriter, r *http.Request) {
-	RenderPage(w, "web/pages/todos.html", data)
+func GetTodosHandler(c *fiber.Ctx) error {
+	return c.Render(
+		"pages/todos",
+		fiber.Map{
+			"Todos": data["Todos"],
+		},
+		"layout/default",
+	)
 }
 
 /**
  * CreateTodoHandler is a handler that creates a new todo
  */
-func CreateTodoHandler(w http.ResponseWriter, r *http.Request) {
+func CreateTodoHandler(c *fiber.Ctx) error {
 	// get message from request
-	message := r.FormValue("message")
+	message := c.FormValue("message")
 
 	//create todo and append to data
 	newId := len(data["Todos"]) + 1
@@ -43,5 +50,6 @@ func CreateTodoHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Creating todo: ", todo)
 
 	//parse template and return
-	newTodoTempl.Execute(w, todo)
+	t := template.Must(template.New("newTodoTempl").ParseFiles("web/components/todo.html"))
+	return t.ExecuteTemplate(c.Response().BodyWriter(), "todo", todo)
 }

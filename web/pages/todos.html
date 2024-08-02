@@ -7,7 +7,7 @@
     <h2 class="mb-2 text-lg font-semibold text-gray-900">Todo List:</h2>
     <ul id="todos" class="max-w-md space-y-1 text-gray-500 list-disc list-inside">
         {{range .Todos}}
-            <li>{{.Message}}</li>
+            {{ template "todo" . }}
         {{end}}
     </ul>
 

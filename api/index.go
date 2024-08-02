@@ -1,24 +1,14 @@
 package api
 
 import (
-	"net/http"
-	"text/template"
+	"github.com/gofiber/fiber/v2"
 )
 
-func RegisterApiRoutes() {
+func RegisterApiRoutes(app *fiber.App) {
 	// Todos
-	http.HandleFunc("/", GetTodosHandler)
-	http.HandleFunc("/create-todo", CreateTodoHandler)
+	app.Get("/", GetTodosHandler)
+	app.Post("/create-todo", CreateTodoHandler)
 
-	//search
-	http.HandleFunc("/search", HandleGetSearch)
-}
-
-func RenderPage(w http.ResponseWriter, page string, data any) {
-	searchTempl := template.Must(
-		template.ParseFiles(
-			"web/layout/default.html",
-			page,
-			"web/components/header.html"))
-	searchTempl.Execute(w, data)
+	// //search
+	app.Get("/search", GetSearchHandler)
 }

@@ -17,8 +17,10 @@ func main() {
 		Views: engine,
 	})
 
-	app.Static("/static", "./static")
+	api.RegisterMiddleware(app)
 	api.RegisterApiRoutes(app)
+
+	app.Static("/static", "./static")
 
 	log.Fatal(app.Listen(":8080"))
 }

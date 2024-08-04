@@ -22,5 +22,4 @@ func RegisterApiRoutes(app *fiber.App) {
 
 func RegisterMiddleware(app *fiber.App) {
 	app.Use(middleware.HandleAuthMiddleware)
-	// app.Use(cache.New())
 }

@@ -1,0 +1,27 @@
+<div class="max-w-md mx-auto mt-9">
+    <!----------------------------------------------------------------------------->
+    <!-- Todo list -->
+    <!----------------------------------------------------------------------------->
+    <h2 class="mb-2 text-lg font-semibold text-gray-900">Todo List:</h2>
+    <ul id="todos" class="max-w-md space-y-1 text-gray-500 list-disc list-inside">
+        {{range .Todos}}
+            {{ template "todo" . }}
+        {{end}}
+    </ul>
+
+    <!----------------------------------------------------------------------------->
+    <!-- New todo form -->
+    <!----------------------------------------------------------------------------->
+    <form 
+        hx-post="/create-todo"
+        hx-target="#todos"
+        hx-swap="beforeend" 
+        hx-on::after-request="this.reset()"
+        class="max-w-[400px] mt-6"
+    >   
+        <div class="relative">
+            <input type="text" name="message" class="block w-full p-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500" placeholder="Your todo..." required />
+            <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2">Submit</button>
+        </div>
+    </form>
+</div>

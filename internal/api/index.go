@@ -1,10 +1,12 @@
 package api
 
 import (
+	"fmt"
 	controllers "test/internal/api/controllers"
 	middleware "test/internal/api/middleware"
 
 	"github.com/gofiber/fiber/v2"
+	"poseur.com/dotenv"
 )
 
 func RegisterApiRoutes(app *fiber.App) {
@@ -22,4 +24,11 @@ func RegisterApiRoutes(app *fiber.App) {
 
 func RegisterMiddleware(app *fiber.App) {
 	app.Use(middleware.HandleAuthMiddleware)
+}
+
+func AddEnvirontmentVariables() {
+	error := dotenv.SetenvFile(".env")
+	if error != nil {
+		fmt.Println("Error loading .env file")
+	}
 }

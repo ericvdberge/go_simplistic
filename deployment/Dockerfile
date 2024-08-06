@@ -1,17 +1,16 @@
 FROM golang:alpine as build
 WORKDIR /app
 
-COPY go.mod ./
-RUN go mod download
-
 COPY . .
+RUN go mod download
+WORKDIR /app/cmd
 RUN go build -o ./dist
 
 FROM scratch as final
 EXPOSE 8080
-COPY --from=build /app/dist /app
-COPY --from=build /app/static /static
-COPY --from=build /app/web /web
+COPY .env .
+COPY --from=build ./app/cmd/dist /app
+COPY --from=build ./app/internal/web internal/web
 CMD ["/app"]
 
 

@@ -1,28 +1,41 @@
-package api
+package controllers
 
 import (
+	services "test/api/services"
+	store "test/api/store"
+
 	"github.com/gofiber/fiber/v2"
 )
 
+var (
+	errorMessage = "Failed to login. Please try again"
+)
+
 func GetLoginHandler(c *fiber.Ctx) error {
-	return c.Render(
+	error := c.Render(
 		"pages/login",
-		nil,
+		store.LoginStore,
 		"layout/default",
 	)
+	store.LoginStore.Error = nil
+	return error
 }
 
 func PostLoginHandler(c *fiber.Ctx) error {
 	email := c.FormValue("email")
 	password := c.FormValue("password")
 
-	if email == "ericvdberge@gmail.com" && password == "password" {
+	jwt, error := services.LoginUserWithUserNameAndPassword(email, password)
+
+	if error == nil {
+		store.LoginStore.Error = nil
 		c.Cookie(&fiber.Cookie{
 			Name:  "access_token",
-			Value: "correct horse battery staple",
+			Value: jwt.AccessToken,
 		})
 		return c.Redirect("/")
 	}
 
+	store.LoginStore.Error = &errorMessage
 	return c.Redirect("/login")
 }

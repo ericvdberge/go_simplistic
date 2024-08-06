@@ -1,34 +1,32 @@
-package api
+package middleware
 
 import (
-	"crypto/sha256"
-	"crypto/subtle"
 	"regexp"
 	"strings"
+
+	services "test/api/services"
+	store "test/api/store"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/keyauth"
 )
 
 var (
-	apiKey        = "correct horse battery staple"
 	anonymousUrls = []*regexp.Regexp{
 		regexp.MustCompile("^/login$"),
 		regexp.MustCompile("/static/*"),
 	}
+	errorMessage = "Login timed out. Please login again"
 )
 
 func validateAPIKey(c *fiber.Ctx, key string) (bool, error) {
-	hashedAPIKey := sha256.Sum256([]byte(apiKey))
-	hashedKey := sha256.Sum256([]byte(key))
-
-	if subtle.ConstantTimeCompare(hashedAPIKey[:], hashedKey[:]) == 1 {
+	if services.LoginUserWithJWT(key) {
 		return true, nil
 	}
 	return false, keyauth.ErrMissingOrMalformedAPIKey
 }
 
-func authFilter(c *fiber.Ctx) bool {
+func applyAuthOnUrls(c *fiber.Ctx) bool {
 	originalURL := strings.ToLower(c.OriginalURL())
 	for _, pattern := range anonymousUrls {
 		if pattern.MatchString(originalURL) {
@@ -40,10 +38,11 @@ func authFilter(c *fiber.Ctx) bool {
 
 func HandleAuthMiddleware(ctx *fiber.Ctx) error {
 	callback := keyauth.New(keyauth.Config{
-		Next:      authFilter,
+		Next:      applyAuthOnUrls,
 		KeyLookup: "cookie:access_token",
 		Validator: validateAPIKey,
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
+			store.LoginStore.Error = &errorMessage
 			return c.Redirect("/login")
 		},
 	})

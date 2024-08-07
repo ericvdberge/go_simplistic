@@ -1,0 +1,39 @@
+# create a docker-compose where we create a keycloak container
+# with command start-dev
+
+version: '3.3'
+
+services:
+  app:
+    container_name: app
+    # build the app image
+    build: .
+    # expose the app on port 8080
+    ports:
+      - 8080:8080
+    networks:
+      - shared-network
+    environment:
+      - KEYCLOAK_CLIENT_ID=public
+      - KEYCLOAK_CLIENT_SECRET=LIuB8REGS6Os4txrxb2VSyxyYR8VrzPa
+      - KEYCLOAK_REALM=myrealm
+      - KEYCLOAK_URL=http://keycloak:8080
+    
+
+  keycloak:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:25.0.2
+    command:
+      - start-dev 
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    ports:
+      - 8081:8080
+    networks: 
+      - shared-network
+
+networks:
+  shared-network:
+    driver: overlay
+    attachable: true

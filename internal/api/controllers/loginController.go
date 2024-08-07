@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	store "test/internal/api/store"
 	services "test/pkg/services"
 
@@ -26,7 +27,7 @@ func PostLoginHandler(c *fiber.Ctx) error {
 	password := c.FormValue("password")
 
 	jwt, error := services.LoginUserWithUserNameAndPassword(email, password)
-
+	
 	if error == nil {
 		store.LoginStore.Error = nil
 		c.Cookie(&fiber.Cookie{
@@ -35,7 +36,8 @@ func PostLoginHandler(c *fiber.Ctx) error {
 		})
 		return c.Redirect("/")
 	}
-
+	
+	fmt.Println("login failed", error)
 	store.LoginStore.Error = &errorMessage
 	return c.Redirect("/login")
 }

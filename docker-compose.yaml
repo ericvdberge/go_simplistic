@@ -1,25 +1,25 @@
-# create a docker-compose where we create a keycloak container
-# with command start-dev
-
 version: '3.3'
 
 services:
+  # =================================================
+  # Our golang app
+  # =================================================
   app:
     container_name: app
-    # build the app image
     build: .
-    # expose the app on port 8080
     ports:
       - 8080:8080
     networks:
       - shared-network
     environment:
       - KEYCLOAK_CLIENT_ID=public
-      - KEYCLOAK_CLIENT_SECRET=LIuB8REGS6Os4txrxb2VSyxyYR8VrzPa
+      - KEYCLOAK_CLIENT_SECRET=HXUlT5wMzZTdRkHoLRg1KBsqop2d3ujv
       - KEYCLOAK_REALM=myrealm
       - KEYCLOAK_URL=http://keycloak:8080
     
-
+  # =================================================
+  # Our keycloak service to authenticate users
+  # =================================================
   keycloak:
     container_name: keycloak
     image: quay.io/keycloak/keycloak:25.0.2
@@ -33,7 +33,25 @@ services:
     networks: 
       - shared-network
 
+  # =================================================
+  # Our sql database
+  # =================================================
+  postgress:
+    container_name: database
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: app
+    ports:
+      - 5432:5432
+    networks:
+      - shared-network
+
 networks:
   shared-network:
     driver: overlay
     attachable: true
+
+volumes:
+  db-volume:

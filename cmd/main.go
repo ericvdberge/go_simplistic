@@ -19,6 +19,7 @@ func main() {
 
 	//register routes, middleware and environment variables
 	api.AddEnvirontmentVariables()
+	api.AddSqlServer()
 	api.RegisterMiddleware(app)
 	api.RegisterApiRoutes(app)
 

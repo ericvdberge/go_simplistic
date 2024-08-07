@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	services "test/pkg/services"
 	"text/template"
 
 	"github.com/gofiber/fiber/v2"
@@ -15,20 +16,20 @@ type Todo struct {
 /**
  * Data to be used in the template
  */
-var data = map[string][]Todo{
-	"Todos": {
-		Todo{Id: 1, Message: "Buy milk"},
-	},
-}
+var (
+	db = services.GetDBClient()
+)
 
 /**
  * GetTodosHandler is a handler that returns the todos
  */
 func GetTodosHandler(c *fiber.Ctx) error {
+	todos := []Todo{}
+	db.Model(&Todo{}).Find(&todos)
 	return c.Render(
 		"pages/todos",
 		fiber.Map{
-			"Todos": data["Todos"],
+			"Todos": todos,
 		},
 		"layout/default",
 	)
@@ -41,10 +42,8 @@ func CreateTodoHandler(c *fiber.Ctx) error {
 	// get message from request
 	message := c.FormValue("message")
 
-	//create todo and append to data
-	newId := len(data["Todos"]) + 1
-	todo := Todo{Id: newId, Message: message}
-	data["Todos"] = append(data["Todos"], todo)
+	todo := Todo{Message: message}
+	db.Create(&todo)
 	fmt.Println("Creating todo: ", todo)
 
 	//parse template and return

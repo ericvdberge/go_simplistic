@@ -4,6 +4,7 @@ import (
 	"fmt"
 	controllers "test/internal/api/controllers"
 	middleware "test/internal/api/middleware"
+	db "test/pkg/db"
 
 	"github.com/gofiber/fiber/v2"
 	"poseur.com/dotenv"
@@ -31,4 +32,8 @@ func AddEnvirontmentVariables() {
 	if error != nil {
 		fmt.Println("Error loading .env file")
 	}
+}
+
+func AddSqlServer() {
+	db.Migrate()
 }

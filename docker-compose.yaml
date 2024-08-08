@@ -11,12 +11,8 @@ services:
       - 8080:8080
     networks:
       - shared-network
-    environment:
-      - KEYCLOAK_CLIENT_ID=public
-      - KEYCLOAK_CLIENT_SECRET=HXUlT5wMzZTdRkHoLRg1KBsqop2d3ujv
-      - KEYCLOAK_REALM=myrealm
-      - KEYCLOAK_URL=http://keycloak:8080
-      - DATABASE_URL="host=database user=postgres password=postgres dbname=app port=5432 sslmode=disabled TimeZone=UTC"
+    env_file:
+      - .docker.env
     depends_on:
       - keycloak
       - postgress

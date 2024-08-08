@@ -1,3 +1,5 @@
 .git
+.env
+.docker.env
 cmd/.bin
 deployment

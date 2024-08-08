@@ -14,17 +14,11 @@ type Todo struct {
 }
 
 /**
- * Data to be used in the template
- */
-var (
-	db = services.GetDBClient()
-)
-
-/**
  * GetTodosHandler is a handler that returns the todos
  */
 func GetTodosHandler(c *fiber.Ctx) error {
 	todos := []Todo{}
+	db := services.GetDBClient()
 	db.Model(&Todo{}).Find(&todos)
 	return c.Render(
 		"pages/todos",
@@ -43,6 +37,7 @@ func CreateTodoHandler(c *fiber.Ctx) error {
 	message := c.FormValue("message")
 
 	todo := Todo{Message: message}
+	db := services.GetDBClient()
 	db.Create(&todo)
 	fmt.Println("Creating todo: ", todo)
 
